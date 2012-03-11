@@ -1,6 +1,10 @@
 # Lobo LessCSS Compiler
-# Version 1.0
+# Version: 1.0
+# License: MIT
+# Author: Luis Lobo Borobia
+# Email: lobo@fictioncity.net, luislobo@gmail.com
 # Uses https://github.com/seb-m/pyinotify to get notifications from file disk
+# Uses libnode-less Ubuntu package for compiling LESS files
 import os
 import wx
 import pyinotify

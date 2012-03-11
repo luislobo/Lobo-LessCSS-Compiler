@@ -1,0 +1,11 @@
+Lobo LessCSS Compiler
+
+This is an attempt to create a Linux LessCSS Compiler GUI (particularly, Ubuntu).
+
+Current release is barely working, since I have just two hours since I started coding my first lines in Python.
+
+It uses Pyinotify to handle directory watching (get it from https://github.com/seb-m/pyinotify)
+
+It uses command line 'lessc' LessCSS compiler. Can be installed using sudo apt-get install libnode-less
+
+This is still work in progress!

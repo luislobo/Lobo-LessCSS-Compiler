@@ -24,13 +24,13 @@ class MainWindow(wx.Frame):
 	def __init__(self, parent, title):
 
 		# Initializes pyinotify objects
-		self.wm = None
+		self.wm = pyinotify.WatchManager()
 		self.notifier = None
 		self.stopWatching = 0
 		self.directories = dict()
 		
 		# Create main frame
-		wx.Frame.__init__(self, parent, title=title, size=(500, 500))
+		wx.Frame.__init__(self, parent, title=title, size=(500, 600))
 
 		# Init the GUI
 		self.InitGUI()
@@ -107,28 +107,28 @@ class MainWindow(wx.Frame):
 		self.stopWatching = 0
 		if self.wm is None:
 			self.wm = pyinotify.WatchManager()
-			if self.notifier is None:
-				self.notifier = pyinotify.Notifier(self.wm, EventHandler(),timeout=10)
-				self.ReadDirectories()
-				for k in self.directories.keys():
-					self.AddPathToWatch(k)
-					self.setSBMessage("Adding: " + k)
-				self.setSBMessage("Watching...")
-				
-				# process Events
-				while True:
-					if self.stopWatching:
-						if not self.wm is None:
-							self.notifier = None
-							self.wm.close()
-							self.wm = None
-							self.directories = dict()
-						self.setSBMessage("Not Watching...")					
-						break
-					self.notifier.process_events()
-					if self.notifier.check_events():
-						self.notifier.read_events()
-					wx.Yield()
+		if self.notifier is None:
+			self.notifier = pyinotify.Notifier(self.wm, EventHandler(),timeout=10)
+			self.ReadDirectories()
+			for k in self.directories.keys():
+				self.AddPathToWatch(k)
+				self.setSBMessage("Adding: " + k)
+			self.setSBMessage("Watching...")
+			
+			# process Events
+			while True:
+				if self.stopWatching:
+					if not self.wm is None:
+						self.notifier = None
+						self.wm.close()
+						self.wm = None
+						self.directories = dict()
+					self.setSBMessage("Not Watching...")					
+					break
+				self.notifier.process_events()
+				if self.notifier.check_events():
+					self.notifier.read_events()
+				wx.Yield()
 		
 	def StopWatching(self):
 		# TODO: handle a better way to see if thread is running
@@ -140,6 +140,8 @@ class MainWindow(wx.Frame):
 			self.configList.Append(path)
 			self.configList.saveList()
 		mask = pyinotify.IN_CLOSE_WRITE
+		if self.notifier is None:
+			self.wm = pyinotify.WatchManager()
 		self.directories[path] = self.wm.add_watch(path, mask, rec=False)
 
 	def OnAddDirectory(self, event):
